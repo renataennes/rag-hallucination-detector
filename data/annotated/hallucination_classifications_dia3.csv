@@ -1,0 +1,11 @@
+id,tipo,confianca,nota
+0,intrinsic,5,modelo respondeu 'yes' a pergunta 'which' — ignora completamente a fonte e o formato esperado
+1,intrinsic,5,modelo respondeu 'no' a pergunta 'what city' — fonte menciona Delhi explicitamente
+2,intrinsic,5,modelo respondeu 'no' a pergunta 'who' — fonte menciona Richard Nixon explicitamente
+3,intrinsic,5,modelo respondeu 'no' a pergunta 'what nationality' — fonte menciona American explicitamente
+4,intrinsic,5,"modelo respondeu 'yes' a pergunta 'what' — resposta correta é composta ('water with a hint of alcohol'), o modelo nem tentou responder"
+5,intrinsic,5,CASO ESPECIAL: fonte não menciona Henri Leconte — modelo respondeu 'yes' sem base e sem reconhecer informação insuficiente na fonte
+6,intrinsic,5,modelo respondeu 'yes' a pergunta 'which' — fonte confirma Indogrammodes claramente
+7,intrinsic,5,modelo respondeu 'no' a pergunta 'who' — Badr Hari mencionado explicitamente na fonte
+8,intrinsic,5,modelo respondeu 'no' a pergunta 'what year' — 2006 mencionado explicitamente na fonte
+9,intrinsic,5,modelo respondeu 'no' a pergunta 'what length' — 6.213 km mencionado explicitamente na fonte
