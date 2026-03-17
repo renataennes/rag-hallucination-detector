@@ -1,6 +1,6 @@
->## 🔍 End-to-end RAG pipeline with automated hallucination detection 
->## using LLM-as-Judge evaluation. Bilingual EN/PT golden dataset. 
->## Built as part of a 40-day AI Evaluator portfolio project.
+## 🔍 End-to-end RAG pipeline with automated hallucination detection 
+## using LLM-as-Judge evaluation. Bilingual EN/PT golden dataset. 
+## Built as part of a 40-day AI Evaluator portfolio project.
 
 **Stack:** Python · LangChain · FAISS · OpenAI API · RAGAS · DeepEval  
 **Status:** 🚧 In progress — Day 6/40
