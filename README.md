@@ -1,151 +1,87 @@
-## 🔍 End-to-end RAG pipeline with automated hallucination detection 
-## using LLM-as-Judge evaluation. Bilingual EN/PT golden dataset. 
-## Built as part of a 20-day AI Evaluator portfolio project.
+# RAG Hallucination Detector
 
-**Stack:** Python · LangChain · FAISS · OpenAI API · RAGAS · DeepEval  
-**Status:** 🚧 In progress — Day 3/20
+Pipeline for detecting and classifying hallucinations in RAG systems,
+combining automatic metrics, LLM-as-a-Judge, and red teaming.
 
----
-
-## 📌 Overview
-
-This project builds a **Retrieval-Augmented Generation (RAG) pipeline** with automated **hallucination detection**, evaluated against a curated bilingual (English–Portuguese) golden dataset.
-
-The goal is to measure how faithfully an LLM answers questions based *only* on retrieved context — and flag responses that contain fabricated or unsupported information.
+**Stack:** Python · LangChain · FAISS · RAGAS · Groq API  
+**Status:** ✅ Complete
 
 ---
 
-## 🎯 Objectives
+## Results at a Glance
 
-- Build a minimal RAG pipeline using LangChain + FAISS + OpenAI
-- Create a **golden dataset** of 60+ verified Q&A pairs (EN + PT)
-- Implement an LLM-as-judge evaluator to score each response
-- Report hallucination rates, faithfulness scores, and failure patterns
-- Visualize results in an interactive dashboard (Streamlit)
+| Evaluation | Result |
+|------------|--------|
+| RAGAS faithfulness | 0.117 |
+| RAGAS context precision | 0.400 |
+| Human vs. LLM agreement | 100% (κ = 1.0) |
+| Red team SAFE rate | 4/10 |
+| Red team UNSAFE rate | 0/10 |
 
 ---
 
-## 🗂️ Project Structure
+## Overview
 
-```
+This project answers one question: **how do you know if a RAG
+pipeline is hallucinating?**
+
+Three complementary approaches are used:
+
+1. **RAGAS** — automatic metrics measuring faithfulness, relevancy,
+   recall and precision
+2. **LLM-as-a-Judge** — classifies each response as CORRECT,
+   FACTUAL_ERROR, FABRICATION or CONTRADICTION
+3. **Red Teaming** — structured safety evaluation across 5 categories
+
+---
+
+## Project Structure
 rag-hallucination-detector/
-│
-├── data/
-│   ├── documents/          # Source documents (PDFs, TXTs)
-│   ├── golden_dataset_en.json   # Ground truth Q&A pairs (English)
-│   └── golden_dataset_pt.json   # Ground truth Q&A pairs (Portuguese)
-│
 ├── src/
-│   ├── ingestion.py        # Document loading and chunking
-│   ├── retriever.py        # FAISS vector store setup
-│   ├── rag_pipeline.py     # Full RAG chain (retrieve + generate)
-│   ├── evaluator.py        # LLM-as-judge hallucination scorer
-│   └── metrics.py          # Faithfulness, precision, recall metrics
-│
+│   └── rag_pipeline.py          # RAG pipeline (FAISS + LangChain)
 ├── notebooks/
-│   └── 01_exploratory.ipynb    # EDA on golden dataset & outputs
-│
-├── dashboard/
-│   └── app.py              # Streamlit dashboard for results
-│
+│   ├── 01_data_exploration.ipynb
+│   ├── 02_rag_pipeline.ipynb
+│   ├── 03_ragas_evaluation.ipynb
+│   ├── 04_llm_judge.ipynb
+│   ├── 05_human_vs_llm.ipynb
+│   └── 06_red_teaming.ipynb
 ├── results/
-│   └── eval_results.json   # Saved evaluation outputs
-│
-├── requirements.txt
-├── .env.example
-└── README.md
-```
+│   ├── ragas_baseline.csv
+│   ├── llm_judge_results.csv
+│   ├── human_vs_llm_agreement.csv
+│   └── red_team_results.csv
+└── docs/
+├── methodology.md
+└── red_team_cases.md
 
 ---
 
-## 🧠 Evaluation Rubric
+## Key Findings
 
-Each LLM response is labeled across 3 dimensions:
+**1. Format consistency is a real production problem**
+LLM-as-a-Judge returned inconsistent output formats — a finding
+with direct implications for pipeline reliability.
 
-| Label | Description |
-|---|---|
-| `faithful` | Response is fully supported by retrieved context |
-| `partially_grounded` | Response uses context but adds unsupported claims |
-| `hallucinated` | Response contains facts not present in context |
+**2. Low RAGAS scores are diagnostic, not failure**
+Scores reflect a minimal pipeline under context constraints.
+They provide a baseline for improvement, not a final verdict.
 
-**Scoring dimensions (0–1):**
-- **Faithfulness** — Is every claim grounded in the retrieved documents?
-- **Context Precision** — Did retrieval return relevant chunks?
-- **Answer Relevance** — Does the answer address the question?
-
----
-
-## 📊 Key Metrics Tracked
-
-- Overall Hallucination Rate (%)
-- Faithfulness Score (avg per model)
-- Failure breakdown by language (EN vs PT)
-- Failure breakdown by question type (factual / reasoning / ambiguous)
+**3. Bilingual signal matters**
+Developed alongside a bilingual EN/PT annotation testset (κ = 0.92)
+— cultural context affects hallucination detection in ways
+monolingual pipelines miss.
 
 ---
 
-## 🔧 Tech Stack
-
-| Tool | Role |
-|---|---|
-| `LangChain` | RAG pipeline orchestration |
-| `FAISS` | Local vector store |
-| `OpenAI API` | Embedding + generation |
-| `RAGAS` | Automated RAG evaluation framework |
-| `DeepEval` | LLM evaluation assertions |
-| `Streamlit` | Results dashboard |
-| `Pandas` | Dataset management |
-
----
-
-## 🚀 Getting Started
-
+## Getting Started
 ```bash
-# 1. Clone the repo
 git clone https://github.com/renataennes/rag-hallucination-detector
 cd rag-hallucination-detector
-
-# 2. Install dependencies
 pip install -r requirements.txt
-
-# 3. Set up your API key
-cp .env.example .env
-# Add your OPENAI_API_KEY to .env
-
-# 4. Run the full evaluation pipeline
-python src/rag_pipeline.py
-
-# 5. Launch the dashboard
-streamlit run dashboard/app.py
+echo "GROQ_API_KEY=your_key_here" > .env
+jupyter notebook notebooks/01_data_exploration.ipynb
 ```
-
----
-
-## 📁 Golden Dataset Format
-
-```json
-{
-  "id": "en_001",
-  "language": "en",
-  "question": "What is the definition of hallucination in LLMs?",
-  "ground_truth": "Hallucination in LLMs refers to the generation of content that is factually incorrect or unsupported by the provided context.",
-  "source_document": "llm_fundamentals.pdf",
-  "difficulty": "factual",
-  "tags": ["hallucination", "LLM basics"]
-}
-```
-
----
-
-## 📈 Results Summary *(example)*
-
-| Model | Faithfulness | Hallucination Rate | Language |
-|---|---|---|---|
-| gpt-4o | 0.87 | 13% | EN |
-| gpt-4o | 0.79 | 21% | PT |
-| gpt-3.5-turbo | 0.71 | 29% | EN |
-
-> Full results available in `results/eval_results.json`
 
 ---
 
