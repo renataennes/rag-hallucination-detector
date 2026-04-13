@@ -87,8 +87,8 @@ jupyter notebook notebooks/01_data_exploration.ipynb
 
 ## 🔗 Related Projects
 
-- [Project 2 — Bilingual LLM Annotation Test Set](../project2-annotation-testset/)
-- [Project 3 — LLM Eval Dashboard](../project3-eval-dashboard/)
+- [Project 2 — Bilingual LLM Annotation Test Set](https://github.com/renataennes/llm-annotation-testset))
+- [Project 3 — LLM Eval Dashboard](https://github.com/renataennes/llm-eval-dashboard))
 
 ---
 
